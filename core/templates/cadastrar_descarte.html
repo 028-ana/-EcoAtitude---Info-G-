@@ -1,0 +1,15 @@
+<div class="container py-5">
+    <h2 class="text-success mb-4">Cadastrar Descarte</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Foto do Descarte</label>
+            <input type="file" name="foto" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Descrição</label>
+            <textarea name="descricao" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+</div>
