@@ -1,69 +1,98 @@
 import os
-import requests
-from django.conf import settings
+from pathlib import Path
 
-class GeminiClient:
-    def __init__(self):
-        self.api_key = settings.GEMINI_API_KEY
-        self.base_url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
-    
-    def validate_submission_image(self, image_path, description=""):
-        """Valida se a imagem mostra uma ação sustentável"""
-        try:
-            # Para desenvolvimento, simula validação
-            # Remova este bloco de simulação quando tiver a API key real
-            if not self.api_key or self.api_key == "sua_chave_gemini_aqui":
-                # Simulação para desenvolvimento
-                return True, "Imagem validada (modo simulação)"
-            
-            # Lê a imagem
-            with open(image_path, 'rb') as image_file:
-                image_data = image_file.read()
-            
-            # Prepara o prompt
-            prompt = f"""
-            Analise esta imagem e determine se ela mostra uma ação sustentável como:
-            - Reciclagem (separação de lixo, descarte em locais adequados)
-            - Compostagem (resíduos orgânicos, composteira)
-            - Limpeza de áreas públicas
-            - Descarte correto de resíduos
-            
-            A descrição fornecida é: "{description}"
-            
-            Responda apenas com 'APPROVED' se for válida ou 'REJECTED' se não for válida.
-            """
-            
-            headers = {'Content-Type': 'application/json'}
-            
-            payload = {
-                "contents": [{
-                    "parts": [{
-                        "text": prompt
-                    }, {
-                        "inline_data": {
-                            "mime_type": "image/jpeg",
-                            "data": image_data.decode('latin-1')
-                        }
-                    }]
-                }]
-            }
-            
-            response = requests.post(
-                f"{self.base_url}?key={self.api_key}",
-                headers=headers,
-                json=payload,
-                timeout=30
-            )
-            
-            response.raise_for_status()
-            result = response.json()
-            
-            text_response = result['candidates'][0]['content']['parts'][0]['text']
-            
-            if 'APPROVED' in text_response:
-                return True, "Imagem validada com sucesso"
-            else:
-                return False, "Imagem não corresponde a uma ação sustentável"
-                
-        except Exception as e:
-            return False, f"Erro na validação: {str(e)}"
+# Caminho base do projeto
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Segurança
+SECRET_KEY = 'django-insecure-8l8o(-2su$6t%k424293i#x672q0$*^itfyi9r32$8j-igo7zf'
+DEBUG = True
+ALLOWED_HOSTS = []
+
+# Apps instalados
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'core',
+]
+
+# Middlewares
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',  # Corrigido 'SssionMiddleware'
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# URLs e templates
+ROOT_URLCONF = 'config.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'core/templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = 'config.wsgi.application'
+
+# Banco de dados PostgreSQL
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ecoatitude',
+        'USER': 'postgres',
+        'PASSWORD': '123456',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+
+# Validação de senhas
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+# Idioma e fuso horário
+LANGUAGE_CODE = 'pt-br'
+TIME_ZONE = 'America/Sao_Paulo'
+USE_I18N = True
+USE_TZ = True
+
+# Arquivos estáticos
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Corrigido para o diretório correto
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'core/static'),
+]
+
+# ID automático padrão
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'core.User'

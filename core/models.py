@@ -2,10 +2,21 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
-    pontos = models.PositiveIntegerField(default=0)
+    pontos = models.IntegerField(default=0)
+    
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='core_user_set',  # muda o related_name para evitar conflito
+        blank=True,
+        help_text='The groups this user belongs to.'
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='core_user_permissions_set',  # muda o related_name
+        blank=True,
+        help_text='Specific permissions for this user.'
+    )
 
-    def __str__(self):
-        return self.username
 
 class DropOffPoint(models.Model):
     nome = models.CharField(max_length=100)
