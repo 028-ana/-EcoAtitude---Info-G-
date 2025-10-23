@@ -1,14 +1,496 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>EcoAtitude</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoAtitude - Sustentabilidade e Recompensas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #28a745;
+            --secondary-color: #20c997;
+            --accent-color: #ffc107;
+        }
+        
+        .hero-section {
+            background: linear-gradient(rgba(40, 167, 69, 0.9), rgba(32, 201, 151, 0.9)), url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            border-radius: 0 0 30px 30px;
+        }
+        
+        .feature-card {
+            transition: transform 0.3s;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .stats-section {
+            background-color: #f8f9fa;
+            padding: 60px 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .btn-eco-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 50px;
+        }
+        
+        .btn-eco-primary:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        
+        .btn-eco-secondary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #212529;
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 50px;
+        }
+        
+        .btn-eco-secondary:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+        }
+        
+        .eco-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .footer {
+            background-color: #343a40;
+            color: white;
+            padding: 40px 0;
+        }
+        
+        .eco-navbar {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .eco-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .counter {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .recompensa-card {
+            transition: all 0.3s;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .recompensa-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        
+        .badge-preco {
+            font-size: 1rem;
+            padding: 8px 15px;
+        }
+    </style>
 </head>
-<body class="bg-light">
-<div class="container py-5">
-    <h1 class="mb-4 text-success">🌱 EcoAtitude</h1>
-    <a href="{% url 'cadastrar_descarte' %}" class="btn btn-primary mb-2">Cadastrar Descarte</a>
-    <a href="{% url 'listar_recompensas' %}" class="btn btn-warning mb-2">Recompensas</a>
-</div>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg eco-navbar sticky-top">
+        <div class="container">
+            <a class="navbar-brand eco-logo" href="#">
+                <i class="bi bi-recycle"></i> EcoAtitude
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#como-funciona">Como Funciona</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#recompensas">Recompensas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contato">Contato</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-success ms-2" href="#cadastro">Cadastre-se</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-4">Transforme seu descarte em recompensas!</h1>
+            <p class="lead mb-5">Junte-se à comunidade EcoAtitude e contribua para um planeta mais limpo enquanto ganha benefícios exclusivos.</p>
+            <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                <a href="#cadastro-descarte" class="btn btn-eco-primary btn-lg">
+                    <i class="bi bi-plus-circle"></i> Cadastrar Descarte
+                </a>
+                <a href="#recompensas" class="btn btn-eco-secondary btn-lg">
+                    <i class="bi bi-gift"></i> Ver Recompensas
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3 col-6 stat-item">
+                    <div class="counter" data-target="2847">0</div>
+                    <p>Usuários Ativos</p>
+                </div>
+                <div class="col-md-3 col-6 stat-item">
+                    <div class="counter" data-target="15632">0</div>
+                    <p>Descartes Registrados</p>
+                </div>
+                <div class="col-md-3 col-6 stat-item">
+                    <div class="counter" data-target="342">0</div>
+                    <p>Toneladas Recicladas</p>
+                </div>
+                <div class="col-md-3 col-6 stat-item">
+                    <div class="counter" data-target="8927">0</div>
+                    <p>Recompensas Entregues</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5" id="como-funciona">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col">
+                    <h2 class="fw-bold">Como Funciona</h2>
+                    <p class="text-muted">Três passos simples para fazer a diferença</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card feature-card h-100 text-center p-4">
+                        <div class="eco-icon">
+                            <i class="bi bi-plus-square"></i>
+                        </div>
+                        <h4>1. Cadastre seu Descarte</h4>
+                        <p class="text-muted">Registre os materiais recicláveis que você está descartando corretamente.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card feature-card h-100 text-center p-4">
+                        <div class="eco-icon">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </div>
+                        <h4>2. Ganhe Pontos</h4>
+                        <p class="text-muted">Acumule pontos a cada descarte registrado e validado.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card feature-card h-100 text-center p-4">
+                        <div class="eco-icon">
+                            <i class="bi bi-gift"></i>
+                        </div>
+                        <h4>3. Resgate Recompensas</h4>
+                        <p class="text-muted">Troque seus pontos por benefícios e recompensas exclusivas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recompensas Preview -->
+    <section class="py-5 bg-light" id="recompensas">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col">
+                    <h2 class="fw-bold">Recompensas Disponíveis</h2>
+                    <p class="text-muted">Troque seus pontos por benefícios incríveis</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card recompensa-card h-100">
+                        <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Cupom de desconto" height="200" style="object-fit: cover;">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Cupom de Desconto - Livraria</h5>
+                            <p class="card-text flex-grow-1">15% de desconto em qualquer livro na Livraria Cultura.</p>
+                            <div class="mt-auto">
+                                <span class="badge bg-success badge-preco">500 pontos</span>
+                                <button class="btn btn-outline-success w-100 mt-2" onclick="resgatarRecompensa(1)">Resgatar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card recompensa-card h-100">
+                        <img src="https://images.unsplash.com/photo-1526947425960-945c6e72858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Produtos ecológicos" height="200" style="object-fit: cover;">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Kit Sustentabilidade</h5>
+                            <p class="card-text flex-grow-1">Kit com canudo de metal, ecobag e copo retrátil.</p>
+                            <div class="mt-auto">
+                                <span class="badge bg-success badge-preco">1200 pontos</span>
+                                <button class="btn btn-outline-success w-100 mt-2" onclick="resgatarRecompensa(2)">Resgatar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card recompensa-card h-100">
+                        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Experiências" height="200" style="object-fit: cover;">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Workshop de Compostagem</h5>
+                            <p class="card-text flex-grow-1">Aprenda a fazer compostagem doméstica com especialistas.</p>
+                            <div class="mt-auto">
+                                <span class="badge bg-success badge-preco">800 pontos</span>
+                                <button class="btn btn-outline-success w-100 mt-2" onclick="resgatarRecompensa(3)">Resgatar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a href="#todas-recompensas" class="btn btn-eco-secondary">Ver Todas as Recompensas</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cadastro Descarte -->
+    <section class="py-5" id="cadastro-descarte">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2 class="fw-bold mb-4">Cadastrar Descarte</h2>
+                    <p class="mb-4">Registre seus materiais recicláveis e acumule pontos para trocar por recompensas.</p>
+                    
+                    <form id="form-descarte">
+                        <div class="mb-3">
+                            <label for="tipo-material" class="form-label">Tipo de Material</label>
+                            <select class="form-select" id="tipo-material" required>
+                                <option value="" selected disabled>Selecione o material</option>
+                                <option value="papel">Papel/Papelão</option>
+                                <option value="plastico">Plástico</option>
+                                <option value="vidro">Vidro</option>
+                                <option value="metal">Metal</option>
+                                <option value="eletronicos">Eletrônicos</option>
+                                <option value="organico">Orgânico (compostagem)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="quantidade" class="form-label">Quantidade (kg)</label>
+                            <input type="number" class="form-control" id="quantidade" min="0.1" step="0.1" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="local-descarte" class="form-label">Local de Descarte</label>
+                            <input type="text" class="form-control" id="local-descarte" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="data-descarte" class="form-label">Data do Descarte</label>
+                            <input type="date" class="form-control" id="data-descarte" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-eco-primary w-100">Cadastrar Descarte</button>
+                    </form>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card bg-light border-0 h-100">
+                        <div class="card-body p-4">
+                            <h4 class="card-title mb-4">Pontuação por Material</h4>
+                            
+                            <div class="d-flex justify-content-between border-bottom py-2">
+                                <span>Papel/Papelão</span>
+                                <span class="fw-bold text-success">10 pts/kg</span>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between border-bottom py-2">
+                                <span>Plástico</span>
+                                <span class="fw-bold text-success">15 pts/kg</span>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between border-bottom py-2">
+                                <span>Vidro</span>
+                                <span class="fw-bold text-success">8 pts/kg</span>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between border-bottom py-2">
+                                <span>Metal</span>
+                                <span class="fw-bold text-success">12 pts/kg</span>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between border-bottom py-2">
+                                <span>Eletrônicos</span>
+                                <span class="fw-bold text-success">25 pts/kg</span>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between py-2">
+                                <span>Orgânico (compostagem)</span>
+                                <span class="fw-bold text-success">5 pts/kg</span>
+                            </div>
+                            
+                            <div class="mt-4 p-3 bg-success text-white rounded">
+                                <h5>Seu Saldo Atual</h5>
+                                <h2 class="mb-0">1,250 pontos</h2>
+                                <small>Continue reciclando para ganhar mais pontos!</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-5 bg-success text-white">
+        <div class="container text-center">
+            <h2 class="fw-bold mb-4">Pronto para fazer a diferença?</h2>
+            <p class="lead mb-4">Junte-se a milhares de pessoas que já estão transformando seus descartes em benefícios.</p>
+            <a href="#cadastro" class="btn btn-light btn-lg px-4">Cadastre-se Gratuitamente</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contato">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="eco-logo mb-3"><i class="bi bi-recycle"></i> EcoAtitude</h5>
+                    <p>Transformando descartes em recompensas para um planeta mais sustentável.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-white"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="mb-3">Links Rápidos</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none">Início</a></li>
+                        <li><a href="#como-funciona" class="text-white text-decoration-none">Como Funciona</a></li>
+                        <li><a href="#recompensas" class="text-white text-decoration-none">Recompensas</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Sobre Nós</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="mb-3">Contato</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-envelope me-2"></i> contato@ecoatitude.com</li>
+                        <li><i class="bi bi-telephone me-2"></i> (11) 99999-9999</li>
+                        <li><i class="bi bi-geo-alt me-2"></i> São Paulo, SP</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p>&copy; 2023 EcoAtitude. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal de Confirmação -->
+    <div class="modal fade" id="modalResgate" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Resgate de Recompensa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalMessage">Recompensa resgatada com sucesso!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Contadores animados
+        document.addEventListener('DOMContentLoaded', function() {
+            const counters = document.querySelectorAll('.counter');
+            const speed = 200;
+            
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const count = +counter.innerText;
+                const increment = target / speed;
+                
+                const updateCount = () => {
+                    if(count < target) {
+                        counter.innerText = Math.ceil(count + increment);
+                        setTimeout(updateCount, 1);
+                    } else {
+                        counter.innerText = target.toLocaleString();
+                    }
+                };
+                
+                updateCount();
+            });
+        });
+        
+        // Formulário de descarte
+        document.getElementById('form-descarte').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Aqui você implementaria a lógica de envio para o backend
+            alert('Descarte cadastrado com sucesso! Pontos creditados em sua conta.');
+            this.reset();
+        });
+        
+        // Função para resgatar recompensas
+        function resgatarRecompensa(id) {
+            const recompensas = {
+                1: { nome: "Cupom de Desconto - Livraria", pontos: 500 },
+                2: { nome: "Kit Sustentabilidade", pontos: 1200 },
+                3: { nome: "Workshop de Compostagem", pontos: 800 }
+            };
+            
+            const recompensa = recompensas[id];
+            const modal = new bootstrap.Modal(document.getElementById('modalResgate'));
+            document.getElementById('modalMessage').textContent = 
+                `Parabéns! Você resgatou: ${recompensa.nome} por ${recompensa.pontos} pontos.`;
+            modal.show();
+        }
+        
+        // Definir data atual como padrão no campo de data
+        document.getElementById('data-descarte').valueAsDate = new Date();
+    </script>
 </body>
 </html>

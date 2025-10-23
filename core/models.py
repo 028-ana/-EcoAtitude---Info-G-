@@ -27,23 +27,6 @@ class DropOffPoint(models.Model):
     def __str__(self):
         return self.nome
 
-class Submission(models.Model):
-    STATUS_CHOICES = (
-        ('pending', 'Pendente'),
-        ('approved', 'Aprovada'),
-        ('rejected', 'Rejeitada'),
-    )
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="submissions")
-    image = models.ImageField(upload_to="submissions/")
-    description = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
-    points_awarded = models.PositiveIntegerField(default=0)
-
-    def __str__(self):
-        return f"{self.user.username} - {self.created_at.strftime('%d/%m/%Y')}"
-
 class Reward(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
