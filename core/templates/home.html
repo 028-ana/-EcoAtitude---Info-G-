@@ -5,115 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoAtitude - Sustentabilidade e Recompensas</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <style>
-        :root{
-            --primary-color:#28a745;
-            --secondary-color:#20c997;
-            --accent-color:#ffc107;
+        :root {
+            --primary-color: #28a745;
+            --secondary-color: #20c997;
+            --accent-color: #ffc107;
         }
-
-        body{scroll-behavior:smooth;}
-
-        /* NAVBAR */
-        .eco-navbar{
-            background:#fff;
-            box-shadow:0 2px 10px rgba(0,0,0,0.1);
+        body { scroll-behavior: smooth; }
+        .eco-navbar { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .eco-logo { font-size: 1.8rem; font-weight: 700; color: var(--primary-color); }
+        .hero-section {
+            background: linear-gradient(rgba(40,167,69,0.9), rgba(32,201,151,0.9)),
+                        url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=2074&q=80');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            padding: 100px 0;
+            border-radius: 0 0 30px 30px;
         }
-        .eco-logo{
-            font-size:1.8rem;
-            font-weight:700;
-            color:var(--primary-color);
+        .feature-card, .recompensa-card {
+            transition: .3s;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-
-        /* HERO */
-        .hero-section{
-            background:linear-gradient(rgba(40,167,69,0.9),rgba(32,201,151,0.9)),
-                       url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=2074&q=80');
-            background-size:cover;
-            background-position:center;
-            color:#fff;
-            padding:100px 0;
-            border-radius:0 0 30px 30px;
+        .feature-card:hover, .recompensa-card:hover { transform: translateY(-8px); }
+        .stats-section { background: #f8f9fa; padding: 60px 0; }
+        .stat-item { text-align: center; padding: 20px; }
+        .eco-icon { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 10px; }
+        .btn-eco-primary {
+            background: var(--primary-color);
+            border: var(--primary-color);
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
         }
-
-        /* CARDS */
-        .feature-card, .recompensa-card{
-            transition:.3s;
-            border:none;
-            box-shadow:0 5px 15px rgba(0,0,0,0.1);
+        .btn-eco-primary:hover { background: #218838; border-color: #1e7e34; }
+        .btn-eco-secondary {
+            background: var(--accent-color);
+            border: var(--accent-color);
+            color: #212529;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
         }
-        .feature-card:hover, .recompensa-card:hover{
-            transform:translateY(-8px);
-        }
-
-        /* ESTATÍSTICAS */
-        .stats-section{
-            background:#f8f9fa;
-            padding:60px 0;
-        }
-        .stat-item{text-align:center;padding:20px;}
-        .eco-icon{font-size:2.5rem;color:var(--primary-color);margin-bottom:10px;}
-
-        /* BOTÕES */
-        .btn-eco-primary{
-            background:var(--primary-color);
-            border:var(--primary-color);
-            color:#fff;
-            padding:12px 30px;
-            border-radius:50px;
-            font-weight:600;
-        }
-        .btn-eco-primary:hover{
-            background:#218838;
-            border-color:#1e7e34;
-        }
-        .btn-eco-secondary{
-            background:var(--accent-color);
-            border:var(--accent-color);
-            color:#212529;
-            padding:12px 30px;
-            border-radius:50px;
-            font-weight:600;
-        }
-
-        /* FOOTER */
-        .footer{
-            background:#343a40;
-            color:#fff;
-            padding:40px 0;
-        }
-
-        .badge-preco{
-            font-size:1rem;
-            padding:8px 15px;
-        }
+        .footer { background: #343a40; color: #fff; padding: 40px 0; }
+        .badge-preco { font-size: 1rem; padding: 8px 15px; }
     </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg eco-navbar sticky-top">
     <div class="container">
         <a class="navbar-brand eco-logo"><i class="bi bi-recycle"></i> EcoAtitude</a>
-        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
-
+        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <div id="nav" class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link active" href="#">Início</a></li>
                 <li class="nav-item"><a class="nav-link" href="#como-funciona">Como Funciona</a></li>
                 <li class="nav-item"><a class="nav-link" href="#recompensas">Recompensas</a></li>
                 <li class="nav-item"><a class="nav-link" href="#contato">Contato</a></li>
-                <li class="nav-item"><a class="nav-link btn btn-outline-success ms-2" href="#cadastro">Cadastre-se</a></li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link btn btn-outline-success ms-2" href="{% url 'logout' %}">Sair</a></li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link btn btn-outline-success ms-2" href="{% url 'register' %}">Cadastre-se</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero-section text-center">
     <div class="container">
         <h1 class="display-4 fw-bold">Transforme seu descarte em recompensas!</h1>
@@ -126,19 +94,29 @@
     </div>
 </section>
 
-<!-- ESTATÍSTICAS -->
 <section class="stats-section">
     <div class="container">
         <div class="row text-center">
-            <div class="col-md-3 col-6 stat-item"><div class="counter" data-target="2847">0</div><p>Usuários Ativos</p></div>
-            <div class="col-md-3 col-6 stat-item"><div class="counter" data-target="15632">0</div><p>Descartes Registrados</p></div>
-            <div class="col-md-3 col-6 stat-item"><div class="counter" data-target="342">0</div><p>Toneladas Recicladas</p></div>
-            <div class="col-md-3 col-6 stat-item"><div class="counter" data-target="8927">0</div><p>Recompensas Entregues</p></div>
+            <div class="col-md-3 col-6 stat-item">
+                <div class="counter" data-target="{{ total_users|default:'0' }}">0</div>
+                <p>Usuários Ativos</p>
+            </div>
+            <div class="col-md-3 col-6 stat-item">
+                <div class="counter" data-target="{{ total_submissions|default:'0' }}">0</div>
+                <p>Descartes Registrados</p>
+            </div>
+            <div class="col-md-3 col-6 stat-item">
+                <div class="counter" data-target="{{ total_kg|default:'0' }}">0</div>
+                <p>Toneladas Recicladas</p>
+            </div>
+            <div class="col-md-3 col-6 stat-item">
+                <div class="counter" data-target="{{ total_rewards|default:'0' }}">0</div>
+                <p>Recompensas Entregues</p>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- COMO FUNCIONA -->
 <section class="py-5" id="como-funciona">
     <div class="container text-center mb-4">
         <h2 class="fw-bold">Como Funciona</h2>
@@ -147,233 +125,152 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-md-4 mb-4"><div class="card p-4 feature-card h-100 text-center"><i class="eco-icon bi bi-plus-square"></i><h4>1. Cadastre o Descarte</h4><p class="text-muted">Registre os materiais recicláveis.</p></div></div>
-
-            <div class="col-md-4 mb-4"><div class="card p-4 feature-card h-100 text-center"><i class="eco-icon bi bi-arrow-clockwise"></i><h4>2. Ganhe Pontos</h4><p class="text-muted">Acumule pontos por cada kg descartado.</p></div></div>
-
-            <div class="col-md-4 mb-4"><div class="card p-4 feature-card h-100 text-center"><i class="eco-icon bi bi-gift"></i><h4>3. Resgate Benefícios</h4><p class="text-muted">Troque os pontos por recompensas.</p></div></div>
+            <div class="col-md-4 mb-4">
+                <div class="card p-4 feature-card h-100 text-center">
+                    <i class="eco-icon bi bi-plus-square"></i>
+                    <h4>1. Cadastre o Descarte</h4>
+                    <p class="text-muted">Registre os materiais recicláveis.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card p-4 feature-card h-100 text-center">
+                    <i class="eco-icon bi bi-arrow-clockwise"></i>
+                    <h4>2. Ganhe Pontos</h4>
+                    <p class="text-muted">Acumule pontos por cada kg descartado.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card p-4 feature-card h-100 text-center">
+                    <i class="eco-icon bi bi-gift"></i>
+                    <h4>3. Resgate Benefícios</h4>
+                    <p class="text-muted">Troque os pontos por recompensas.</p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- RECOMPENSAS -->
-<section class="py-5 bg-light" id="recompensas">
-    <div class="container text-center mb-5"><h2 class="fw-bold">Recompensas Disponíveis</h2><p class="text-muted">Troque seus pontos!</p></div>
+<section class="py-5" id="recompensas">
+    <div class="container text-center mb-5">
+        <h2 class="fw-bold">Recompensas Disponíveis</h2>
+        <p class="text-muted">Troque seus pontos!</p>
+    </div>
 
     <div class="container">
         <div class="row">
-
-            <!-- RECOMPENSA 1 -->
+            {% for reward in rewards %}
             <div class="col-md-4 mb-4">
                 <div class="card recompensa-card h-100">
-                    <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=600&q=60" 
-                         class="card-img-top" style="height:200px;object-fit:cover;">
+                    {% if reward.image %}
+                        <img src="{{ reward.image.url }}" class="card-img-top" style="height:200px;object-fit:cover;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/600x200.png?text=Recompensa" class="card-img-top">
+                    {% endif %}
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">Cupom de Desconto</h5>
-                        <p class="text-muted">15% em livros.</p>
-                        <span class="badge bg-success badge-preco">500 pts</span>
-                        <button class="btn btn-outline-success w-100 mt-2" onclick="resgatarRecompensa('Cupom de Desconto', 500)">Resgatar</button>
+                        <h5 class="card-title">{{ reward.title }}</h5>
+                        <p class="text-muted">{{ reward.description }}</p>
+                        <span class="badge bg-success badge-preco">{{ reward.points_required }} pts</span>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'redeem-reward' reward.id %}" class="btn btn-outline-success w-100 mt-2">Resgatar</a>
+                        {% else %}
+                        <a href="{% url 'login' %}?next={% url 'reward-list' %}" class="btn btn-outline-secondary w-100 mt-2">Faça login para resgatar</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-
-            <!-- RECOMPENSA 2 -->
-            <div class="col-md-4 mb-4">
-                <div class="card recompensa-card h-100">
-                    <img src="https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=600&q=60" 
-                         class="card-img-top" style="height:200px;object-fit:cover;">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">Kit Sustentabilidade</h5>
-                        <p class="text-muted">Canudo + ecobag + copo retrátil.</p>
-                        <span class="badge bg-success badge-preco">1200 pts</span>
-                        <button class="btn btn-outline-success w-100 mt-2" onclick="resgatarRecompensa('Kit Sustentabilidade', 1200)">Resgatar</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- RECOMPENSA 3 -->
-            <div class="col-md-4 mb-4">
-                <div class="card recompensa-card h-100">
-                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=600&q=60" 
-                         class="card-img-top" style="height:200px;object-fit:cover;">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">Workshop de Compostagem</h5>
-                        <p class="text-muted">Aprenda compostagem caseira.</p>
-                        <span class="badge bg-success badge-preco">800 pts</span>
-                        <button class="btn btn-outline-success w-100 mt-2" onclick="resgatarRecompensa('Workshop de Compostagem', 800)">Resgatar</button>
-                    </div>
-                </div>
-            </div>
-
+            {% empty %}
+            <p class="text-muted">Nenhuma recompensa disponível no momento.</p>
+            {% endfor %}
         </div>
     </div>
 </section>
 
-<!-- CADASTRO DESCARTE -->
 <section class="py-5" id="cadastro-descarte">
     <div class="container">
         <div class="row">
-
-            <!-- FORMULÁRIO -->
             <div class="col-md-6">
                 <h2 class="fw-bold mb-3">Cadastrar Descarte</h2>
-
-                <form id="form-descarte">
+                {% if user.is_authenticated %}
+                <form method="POST" enctype="multipart/form-data" action="{% url 'submission-create' %}">
+                    {% csrf_token %}
                     <div class="mb-3">
-                        <label class="form-label">Material</label>
-                        <select class="form-select" id="tipo-material" required>
-                            <option disabled selected>Selecione</option>
+                        <label class="form-label">Foto do Descarte</label>
+                        <input type="file" name="image" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de Material</label>
+                        <select name="material_type" class="form-select" required>
+                            <option value="">Selecione</option>
                             <option value="papel">Papel/Papelão</option>
                             <option value="plastico">Plástico</option>
                             <option value="vidro">Vidro</option>
                             <option value="metal">Metal</option>
-                            <option value="eletronicos">Eletrônicos</option>
+                            <option value="eletronico">Eletrônicos</option>
                             <option value="organico">Orgânico</option>
                         </select>
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label">Quantidade (kg)</label>
-                        <input type="number" id="quantidade" class="form-control" min="0.1" step="0.1" required>
+                        <input type="number" step="0.01" name="quantity" class="form-control" required placeholder="Ex: 2.5">
                     </div>
-
                     <div class="mb-3">
-                        <label class="form-label">Local</label>
-                        <input type="text" id="local-descarte" class="form-control" required>
+                        <label class="form-label">Descrição</label>
+                        <textarea name="description" class="form-control" rows="3" placeholder="Descrição do descarte"></textarea>
                     </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Data</label>
-                        <input type="date" id="data-descarte" class="form-control" required>
-                    </div>
-
-                    <button class="btn btn-eco-primary w-100">Cadastrar</button>
+                    <button class="btn btn-eco-primary w-100 mt-3">Cadastrar</button>
                 </form>
+                {% else %}
+                <p>Faça login para cadastrar um descarte.</p>
+                <a href="{% url 'login' %}" class="btn btn-eco-primary w-100 mt-2">Login</a>
+                {% endif %}
             </div>
 
-            <!-- PONTUAÇÃO -->
             <div class="col-md-6">
                 <div class="card bg-light border-0 h-100 p-4">
                     <h4>Pontuação por Material</h4>
-
-                    <div class="d-flex justify-content-between border-bottom py-2"><span>Papel/Papelão</span><strong class="text-success">10 pts/kg</strong></div>
-                    <div class="d-flex justify-content-between border-bottom py-2"><span>Plástico</span><strong class="text-success">15 pts/kg</strong></div>
-                    <div class="d-flex justify-content-between border-bottom py-2"><span>Vidro</span><strong class="text-success">8 pts/kg</strong></div>
-                    <div class="d-flex justify-content-between border-bottom py-2"><span>Metal</span><strong class="text-success">12 pts/kg</strong></div>
-                    <div class="d-flex justify-content-between border-bottom py-2"><span>Eletrônicos</span><strong class="text-success">25 pts/kg</strong></div>
-                    <div class="d-flex justify-content-between py-2"><span>Orgânico</span><strong class="text-success">5 pts/kg</strong></div>
+                    {% for material, pts in material_points.items|default:{} %}
+                    <div class="d-flex justify-content-between border-bottom py-2">
+                        <span>{{ material }}</span>
+                        <strong class="text-success">{{ pts }} pts/kg</strong>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted">Nenhum material configurado.</p>
+                    {% endfor %}
 
                     <div class="mt-4 p-3 bg-success text-white rounded">
                         <h5>Seu Saldo Atual</h5>
-                        <h2 class="mb-0" id="saldoPontos">1250 pontos</h2>
+                        <h2 class="mb-0">{{ user_points|default:"0" }} pontos</h2>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="footer" id="contato">
+<footer class="footer text-center" id="contato">
     <div class="container">
-        <div class="row">
-
-            <div class="col-md-4 mb-4">
-                <h5 class="eco-logo">
-                    <i class="bi bi-recycle"></i> EcoAtitude
-                </h5>
-                <p>Sustentabilidade e recompensas.</p>
-            </div>
-
-            <div class="col-md-4 mb-4">
-                <h5>Links</h5>
-                <ul class="list-unstyled">
-                    <li><a href="#" class="text-white">Início</a></li>
-                    <li><a href="#como-funciona" class="text-white">Como Funciona</a></li>
-                    <li><a href="#recompensas" class="text-white">Recompensas</a></li>
-                </ul>
-            </div>
-
-            <div class="col-md-4 mb-4">
-                <h5>Contato</h5>
-                <ul class="list-unstyled">
-                    <li><i class="bi bi-envelope me-2"></i> contato@ecoatitude.com</li>
-                    <li><i class="bi bi-telephone me-2"></i> (11) 99999-9999</li>
-                    <li><i class="bi bi-geo-alt me-2"></i> São Paulo, SP</li>
-                </ul>
-            </div>
-
-        </div>
-        <hr>
-        <p class="text-center mb-0">© 2025 EcoAtitude</p>
+        <p>&copy; {{ current_year }} EcoAtitude. Todos os direitos reservados.</p>
     </div>
 </footer>
 
-<!-- MODAL -->
-<div class="modal fade" id="modalResgate">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title">Resgate Concluído</h5>
-                <button class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-                <p id="modalMessage"></p>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-success" data-bs-dismiss="modal">Fechar</button>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-    // ANIMAÇÃO CONTADORES
-    document.addEventListener('DOMContentLoaded',()=>{
-        document.querySelectorAll('.counter').forEach(counter=>{
-            const target=+counter.dataset.target;let c=0;
-            const inc=Math.ceil(target/200);
-            const update=()=>{
-                c+=inc;
-                if(c<target){
-                    counter.textContent=c;
-                    requestAnimationFrame(update);
-                } else {
-                    counter.textContent=target.toLocaleString();
-                }
-            };
-            update();
-        });
+    // Animação de contadores
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+        const updateCount = () => {
+            const target = +counter.getAttribute('data-target');
+            const count = +counter.innerText;
+            const increment = target / 200;
+            if(count < target) {
+                counter.innerText = Math.ceil(count + increment);
+                setTimeout(updateCount, 10);
+            } else {
+                counter.innerText = target;
+            }
+        };
+        updateCount();
     });
-
-    // CADASTRO DESCARTE
-    document.getElementById('form-descarte').addEventListener('submit',e=>{
-        e.preventDefault();
-        alert('Descarte registrado com sucesso!');
-        e.target.reset();
-    });
-
-    // RESGATAR RECOMPENSA COM CHECAGEM DE PONTOS
-    function resgatarRecompensa(nome, custo) {
-        let saldo = 1250;
-
-        if (saldo < custo) {
-            alert("❌ Você não possui pontos suficientes para esta recompensa!");
-            return;
-        }
-
-        document.getElementById('modalMessage').innerText = `Você resgatou: ${nome}`;
-        new bootstrap.Modal(document.getElementById('modalResgate')).show();
-    }
 </script>
-
 </body>
 </html>

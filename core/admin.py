@@ -18,8 +18,10 @@ class DropOffPointAdmin(admin.ModelAdmin):
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):
     list_display = ('user', 'status', 'points_awarded', 'created_at')
-    list_filter = ('status', 'created_at')
-    search_fields = ('user__username', 'description')
+
+    def points_awarded(self, obj):
+        # se o cálculo for mais complexo, faça aqui
+        return obj.points  # ou outra lógica
 
 @admin.register(Reward)
 class RewardAdmin(admin.ModelAdmin):
