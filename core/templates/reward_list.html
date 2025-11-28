@@ -1,0 +1,18 @@
+<div class="container py-5">
+    <h2 class="text-success mb-4">Recompensas</h2>
+    <div class="row">
+        {% for r in recompensas %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                {% if r.image %}<img src="{{ r.image.url }}" class="card-img-top">{% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ r.title }}</h5>
+                    <p class="card-text">{{ r.description }}</p>
+                    <p>Pontos necessários: {{ r.points_required }}</p>
+                    <a href="{% url 'resgatar_recompensa' r.id %}" class="btn btn-success">Resgatar</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>

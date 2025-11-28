@@ -4,7 +4,7 @@ from . import views
 from .views import redeem_reward
 
 urlpatterns = [
-    path('', views.home.html, name='home'),
+    path('', views.home_view, name='home'),
 
     # users
     path('users/', views.UserListView.as_view(), name='user-list'),

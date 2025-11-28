@@ -228,7 +228,9 @@
             <div class="col-md-6">
                 <div class="card bg-light border-0 h-100 p-4">
                     <h4>Pontuação por Material</h4>
-                    {% for material, pts in material_points.items|default:{} %}
+
+                    <!-- AQUI ESTAVA O ERRO — AGORA CORRIGIDO -->
+                    {% for material, pts in material_points.items %}
                     <div class="d-flex justify-content-between border-bottom py-2">
                         <span>{{ material }}</span>
                         <strong class="text-success">{{ pts }} pts/kg</strong>

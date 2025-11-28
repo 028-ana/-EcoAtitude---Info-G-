@@ -21,7 +21,6 @@ def home_view(request):
     total_kg = Submission.objects.aggregate(total=Sum('quantity'))['total'] or 0
     total_rewards = Reward.objects.count()
     
-    # Pontos por tipo de material
     material_points = {
         "Papel/Papelão": 5,
         "Plástico": 10,
@@ -128,6 +127,7 @@ class SubmissionDetailView(DetailView):
 
 
 @login_required
+@login_required
 def create_submission(request):
     if request.method == "POST":
         form = SubmissionForm(request.POST, request.FILES)
@@ -136,7 +136,6 @@ def create_submission(request):
             submission.user = request.user
             submission.status = "pending"
 
-            # Calcula pontos
             points_dict = {
                 "papel": 5,
                 "plastico": 10,
@@ -145,8 +144,14 @@ def create_submission(request):
                 "eletronico": 20,
                 "organico": 2,
             }
-            submission.points = float(submission.quantity) * points_dict.get(submission.material_type, 0)
+
+            qty = submission.quantity or 0
+            submission.points = float(qty) * points_dict.get(submission.material_type, 0)
+
             submission.save()
+
+            request.user.pontos += submission.points
+            request.user.save()
 
             messages.success(request, "Descarte enviado! Aguarde validação.")
             return redirect("home")
@@ -156,11 +161,12 @@ def create_submission(request):
     return render(request, "submissions/submission_form.html", {"form": form})
 
 
+
 # ---------------- RECOMPENSAS ----------------
 
 class RewardListView(ListView):
     model = Reward
-    template_name = "rewards/reward_list.html"
+    template_name = "reward_list.html"
     context_object_name = "rewards"
 
 
@@ -180,7 +186,7 @@ def redeem_reward(request, reward_id):
     return redirect("reward-list")
 
 
-# ---------------- CADASTRAR DESCARTE (BOTÃO DO HOME) ----------------
+# ---------------- CADASTRAR DESCARTE ----------------
 
 @login_required
 def cadastrar_descarte(request):
