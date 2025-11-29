@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Confirmar Exclusão</h4>
+                </div>
+
+                <div class="card-body">
+                    <p class="alert alert-warning">
+                        <strong>Atenção!</strong><br>
+                        Você está prestes a excluir permanentemente esta submissão.
+                    </p>
+
+                    <!-- Dados da submissão -->
+                    <div class="card mb-3 border">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ submission.get_material_type_display }}</h5>
+
+                            <p class="mb-1"><strong>Quantidade:</strong> {{ submission.quantity }} kg</p>
+                            <p class="mb-1"><strong>Pontos:</strong> {{ submission.points }}</p>
+
+                            <p class="mb-1">
+                                <strong>Status:</strong>
+                                <span class="badge bg-
+                                    {% if submission.status == 'approved' %}success
+                                    {% elif submission.status == 'rejected' %}danger
+                                    {% else %}warning
+                                    {% endif %}">
+                                    {{ submission.get_status_display }}
+                                </span>
+                            </p>
+
+                            <p class="mb-0">
+                                <strong>Data:</strong> {{ submission.created_at|date:"d/m/Y H:i" }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Aviso caso esteja aprovada -->
+                    {% if submission.status == 'approved' %}
+                    <div class="alert alert-info">
+                        <strong>Importante:</strong><br>
+                        Como esta submissão está aprovada, 
+                        <strong>{{ submission.points }} pontos</strong> serão removidos do seu total.
+                    </div>
+                    {% endif %}
+
+                    <!-- Formulário -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger">
+                                ✔ Sim, Excluir Permanentemente
+                            </button>
+                            <a href="{% url 'submission-list' %}" class="btn btn-secondary">
+                                ✖ Cancelar
+                            </a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

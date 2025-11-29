@@ -1,9 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator
 
-# Usuário customizado
+# Primeiro defina o User customizado
 class User(AbstractUser):
     pontos = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.username
 
 # Pontos de coleta
 class DropOffPoint(models.Model):
@@ -44,7 +48,7 @@ MATERIAL_POINTS = {
     "organico": 5,
 }
 
-# Submissão de materiais recicláveis
+# Agora defina Submission (depois de User)
 class Submission(models.Model):
     STATUS_CHOICES = [
         ("pending", "Pendente"),
@@ -58,14 +62,25 @@ class Submission(models.Model):
     material_type = models.CharField(
         max_length=20, choices=MATERIAL_CHOICES, default="papel"
     )
-    quantity = models.DecimalField(max_digits=6, decimal_places=2)  # em kg
+    quantity = models.DecimalField(
+        max_digits=6, 
+        decimal_places=2,
+        validators=[MinValueValidator(0.01)]
+    )
     points = models.PositiveIntegerField(default=0)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def calculate_points(self):
         """Calcula os pontos com base na quantidade e no tipo de material."""
-        return int(self.quantity * MATERIAL_POINTS.get(self.material_type, 0))
+        if self.quantity is None:
+            return 0
+        
+        # Converte para float para garantir a operação matemática
+        quantity_float = float(self.quantity)
+        points_per_unit = MATERIAL_POINTS.get(self.material_type, 0)
+        
+        return int(quantity_float * points_per_unit)
 
     def save(self, *args, **kwargs):
         """Calcula pontos automaticamente ao salvar."""

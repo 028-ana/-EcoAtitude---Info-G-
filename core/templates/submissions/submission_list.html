@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="fw-bold mb-3">Minhas Submissões de Descarte</h2>
+
+    <div class="mb-4">
+        <a href="{% url 'submission-create' %}" class="btn btn-success me-2">
+            <i class="bi bi-plus-circle"></i> Nova Submissão
+        </a>
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+            Voltar
+        </a>
+    </div>
+
+    {% if submissions %}
+        <div class="row">
+            {% for submission in submissions %}
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-0 rounded-4 overflow-hidden h-100">
+
+                    <!-- Cabeçalho -->
+                    <div class="d-flex justify-content-between p-3 bg-light">
+                        <h5 class="m-0 fw-bold text-success">
+                            {{ submission.get_material_type_display }}
+                        </h5>
+
+                        <span class="badge 
+                            {% if submission.status == 'approved' %} bg-success 
+                            {% elif submission.status == 'rejected' %} bg-danger 
+                            {% else %} bg-warning text-dark {% endif %}
+                            px-3 py-2 rounded-pill">
+                            {{ submission.get_status_display }}
+                        </span>
+                    </div>
+
+                    <div class="card-body">
+
+                        <!-- Informações -->
+                        <p class="mb-2">
+                            <strong>Quantidade:</strong> {{ submission.quantity }} kg<br>
+                            <strong>Pontos:</strong> {{ submission.points }}<br>
+                            <strong>Data:</strong> {{ submission.created_at|date:"d/m/Y H:i" }}<br>
+
+                            {% if submission.description %}
+                                <strong>Descrição:</strong> {{ submission.description }}
+                            {% endif %}
+                        </p>
+
+                        <!-- Imagem -->
+                        {% if submission.image %}
+                            <img src="{{ submission.image.url }}" 
+                                alt="Imagem do material"
+                                class="img-fluid rounded mb-3"
+                                style="height: 230px; object-fit: cover; width: 100%;">
+                        {% endif %}
+
+                        <!-- Botões -->
+                        <div class="d-flex justify-content-between mt-2">
+                            <a href="{% url 'submission-detail' submission.pk %}" 
+                               class="btn btn-outline-primary px-4">
+                                <i class="bi bi-eye"></i> Ver Detalhes
+                            </a>
+
+                            <a href="{% url 'submission-delete' submission.pk %}" 
+                               class="btn btn-outline-danger px-4">
+                                <i class="bi bi-trash"></i> Excluir
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    {% else %}
+        <div class="alert alert-info py-4">
+            <h4 class="fw-bold">Nenhuma submissão encontrada</h4>
+            <p>Você ainda não fez nenhum descarte. Comece agora mesmo!</p>
+            <a href="{% url 'submission-create' %}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Fazer Primeiro Descarte
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

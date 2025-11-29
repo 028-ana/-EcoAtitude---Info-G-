@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Detalhes do Descarte</h2>
+        <div>
+            <a href="{% url 'submission-list' %}" class="btn btn-secondary">Voltar</a>
+            <a href="{% url 'submission-delete' submission.pk %}" class="btn btn-danger">Excluir</a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h4 class="mb-0">Informações do Descarte #{{ submission.id }}</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Dados Principais</h5>
+                    <p><strong>Data:</strong> {{ submission.created_at|date:"d/m/Y H:i" }}</p>
+                    <p><strong>Usuário:</strong> {{ submission.user.username }}</p>
+                    <p><strong>Tipo de Material:</strong> {{ submission.get_material_type_display }}</p>
+                    <p><strong>Quantidade:</strong> {{ submission.quantity }} kg</p>
+                    <p><strong>Pontos Gerados:</strong> {{ submission.points }} pts</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Informações Adicionais</h5>
+                    <p><strong>Status:</strong> 
+                        <span class="badge 
+                            {% if submission.status == 'approved' %}bg-success
+                            {% elif submission.status == 'rejected' %}bg-danger
+                            {% else %}bg-warning{% endif %}">
+                            {{ submission.get_status_display }}
+                        </span>
+                    </p>
+                    {% if submission.description %}
+                    <p><strong>Descrição:</strong> {{ submission.description }}</p>
+                    {% endif %}
+                    {% if submission.image %}
+                    <p><strong>Imagem:</strong></p>
+                    <img src="{{ submission.image.url }}" alt="Descarte" class="img-fluid" style="max-height: 200px;">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

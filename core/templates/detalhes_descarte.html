@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Detalhes do Descarte</h2>
+        <div>
+            <a href="{% url 'submission-list' %}" class="btn btn-secondary">Voltar</a>
+            <a href="{% url 'submission-delete' submission.pk %}" class="btn btn-danger">Excluir</a>
+        </div>
+    </div>
+    
+    <!-- ADICIONE ESTA PARTE PARA MOSTRAR OS DADOS -->
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Informações do Descarte</h5>
+                    <p><strong>ID:</strong> {{ submission.id }}</p>
+                    <p><strong>Data:</strong> {{ submission.data_descarte }}</p>
+                    <p><strong>Material:</strong> {{ submission.material }}</p>
+                    <p><strong>Quantidade:</strong> {{ submission.quantidade }} kg</p>
+                    <p><strong>Pontos Gerados:</strong> {{ submission.pontos_gerados }} pts</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Localização</h5>
+                    <p><strong>Local:</strong> {{ submission.local }}</p>
+                    <p><strong>Status:</strong> {{ submission.status }}</p>
+                    {% if submission.observacoes %}
+                    <p><strong>Observações:</strong> {{ submission.observacoes }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

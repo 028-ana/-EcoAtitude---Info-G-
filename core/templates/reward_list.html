@@ -1,18 +1,181 @@
-<div class="container py-5">
-    <h2 class="text-success mb-4">Recompensas</h2>
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="hero-section text-center mb-4" style="padding:60px 0;">
+    <div class="container">
+        <h1 class="display-5 fw-bold">Recompensas Sustentáveis</h1>
+        <p class="lead mb-3">Troque seus pontos por produtos e experiências eco — feitos para o planeta.</p>
+        <div class="d-flex justify-content-center gap-2">
+            <a href="#catalog" class="btn btn-eco-primary btn-lg"><i class="bi bi-gift"></i> Ver Recompensas</a>
+            <a href="{% url 'submission-create' %}" class="btn btn-eco-secondary btn-lg"><i class="bi bi-plus-circle"></i> Ganhar Pontos</a>
+        </div>
+    </div>
+</section>
+
+<!-- Mensagem de Sucesso -->
+{% if messages %}
+<div class="container mb-3">
+    {% for message in messages %}
+    <div class="alert alert-success">
+        <i class="bi bi-check-circle-fill"></i> {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Filtros / Busca / Saldo -->
+<div class="container mb-4" id="catalog">
+    <div class="row align-items-center">
+        <div class="col-md-6 mb-3">
+            <form method="get" class="d-flex">
+                <input type="search" name="q" placeholder="Buscar recompensa..." value="{{ request.GET.q|default:'' }}" class="form-control me-2">
+                <select name="category" class="form-select me-2" style="max-width:160px;">
+                    <option value="">Todas</option>
+                    <option value="produtos">Produtos</option>
+                    <option value="descontos">Descontos</option>
+                    <option value="experiencias">Experiências</option>
+                </select>
+                <button class="btn btn-outline-success">Buscar</button>
+            </form>
+        </div>
+
+        <div class="col-md-6 text-md-end">
+            <div class="d-inline-block text-start">
+                <small class="text-muted">Seu saldo</small>
+                <div class="fw-bold fs-5 text-success">{{ user_points|default:"0" }} pts</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GRID DE RECOMPENSAS -->
+<div class="container">
     <div class="row">
-        {% for r in recompensas %}
-        <div class="col-md-4 mb-3">
-            <div class="card">
-                {% if r.image %}<img src="{{ r.image.url }}" class="card-img-top">{% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ r.title }}</h5>
-                    <p class="card-text">{{ r.description }}</p>
-                    <p>Pontos necessários: {{ r.points_required }}</p>
-                    <a href="{% url 'resgatar_recompensa' r.id %}" class="btn btn-success">Resgatar</a>
+
+        {% if rewards %}
+        {% for reward in rewards %}
+        <div class="col-md-4 mb-4">
+            <div class="card recompensa-card h-100 shadow-sm border-0">
+
+                <!-- IMAGEM PERSONALIZADA -->
+                {% if reward.image %}
+                    <img src="{{ reward.image.url }}" class="card-img-top" style="height:230px; object-fit:cover;">
+                {% else %}
+                    <img src="https://images.pexels.com/photos/3738347/pexels-photo-3738347.jpeg" class="card-img-top" style="height:230px; object-fit:cover;">
+                {% endif %}
+
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ reward.title }}</h5>
+                    <p class="text-muted" style="flex:1;">{{ reward.description|truncatechars:120 }}</p>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-success badge-preco">{{ reward.points_required }} pts</span>
+
+                        {% if user.is_authenticated %}
+                            {% if user_points|default:0 >= reward.points_required %}
+                                <button class="btn btn-eco-primary btn-sm ms-2"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#redeemModal"
+                                    data-reward-id="{{ reward.id }}"
+                                    data-reward-title="{{ reward.title }}"
+                                    data-reward-points="{{ reward.points_required }}">
+                                    <i class="bi bi-cart-check"></i> Resgatar
+                                </button>
+                            {% else %}
+                                <button class="btn btn-outline-secondary btn-sm ms-2" disabled>
+                                    <i class="bi bi-lock-fill"></i> Faltam pontos
+                                </button>
+                            {% endif %}
+                        {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm ms-2">
+                            Login
+                        </a>
+                        {% endif %}
+                    </div>
+
+                    {% if reward.category %}
+                    <small class="text-muted mt-2">{{ reward.get_category_display }}</small>
+                    {% endif %}
                 </div>
             </div>
         </div>
         {% endfor %}
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">Nenhuma recompensa disponível no momento.</div>
+        </div>
+        {% endif %}
     </div>
 </div>
+
+<!-- MODAL DE RESGATE -->
+<div class="modal fade" id="redeemModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" action="{% url 'redeem-reward' 0 %}" id="redeemForm">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Resgate</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p>Você está prestes a resgatar:</p>
+                    <p class="fw-bold" id="modalRewardTitle"></p>
+                    <p>Será debitado
+                        <span class="fw-bold text-success" id="modalRewardPoints"></span>
+                        do seu saldo.
+                    </p>
+
+                    <div class="alert alert-warning d-none" id="modalInsufficient">
+                        Pontos insuficientes para este resgate.
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-eco-primary" id="confirmRedeemBtn">Confirmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JS -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var redeemModal = document.getElementById('redeemModal');
+
+    redeemModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+
+        var rewardId = button.getAttribute('data-reward-id');
+        var title = button.getAttribute('data-reward-title');
+        var points = button.getAttribute('data-reward-points');
+
+        document.getElementById('modalRewardTitle').innerText = title;
+        document.getElementById('modalRewardPoints').innerText = points + " pts";
+
+        var form = document.getElementById('redeemForm');
+        form.action = form.action.replace(/\/\d+\/?$/, "/" + rewardId + "/");
+
+        var userPoints = parseInt('{{ user_points|default:"0" }}');
+        var needed = parseInt(points);
+
+        var insufficient = document.getElementById('modalInsufficient');
+        var btn = document.getElementById('confirmRedeemBtn');
+
+        if (userPoints < needed) {
+            insufficient.classList.remove("d-none");
+            btn.disabled = true;
+        } else {
+            insufficient.classList.add("d-none");
+            btn.disabled = false;
+        }
+    });
+});
+</script>
+
+{% endblock %}

@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
+from django.urls import reverse_lazy
+from django.views.generic import DeleteView
 
 from .models import DropOffPoint, Submission, Reward
 from .forms import SubmissionForm, RegisterForm, LoginForm
@@ -42,7 +44,6 @@ def home_view(request):
         'total_rewards': total_rewards,
         'material_points': material_points,
         'user_points': user_points,
-        
     }
 
     return render(request, "home.html", context)
@@ -117,7 +118,9 @@ class SubmissionListView(ListView):
     context_object_name = "submissions"
 
     def get_queryset(self):
-        return Submission.objects.filter(user=self.request.user)
+        if self.request.user.is_authenticated:
+            return Submission.objects.filter(user=self.request.user)
+        return Submission.objects.none()
 
 
 class SubmissionDetailView(DetailView):
@@ -126,40 +129,65 @@ class SubmissionDetailView(DetailView):
     context_object_name = "submission"
 
 
-@login_required
+# ---------------- CRIAR SUBMISSÃO ----------------
+
 @login_required
 def create_submission(request):
     if request.method == "POST":
         form = SubmissionForm(request.POST, request.FILES)
         if form.is_valid():
-            submission = form.save(commit=False)
-            submission.user = request.user
-            submission.status = "pending"
+            try:
+                submission = form.save(commit=False)
+                submission.user = request.user
+                submission.status = "pending"
+                
+                # Usa o método calculate_points do modelo em vez de recalcular aqui
+                # Isso garante consistência com a lógica definida no modelo
+                submission.save()  # Isso já chama calculate_points automaticamente
+                
+                # Atualiza os pontos do usuário
+                request.user.pontos += submission.points
+                request.user.save()
 
-            points_dict = {
-                "papel": 5,
-                "plastico": 10,
-                "vidro": 8,
-                "metal": 12,
-                "eletronico": 20,
-                "organico": 2,
-            }
-
-            qty = submission.quantity or 0
-            submission.points = float(qty) * points_dict.get(submission.material_type, 0)
-
-            submission.save()
-
-            request.user.pontos += submission.points
-            request.user.save()
-
-            messages.success(request, "Descarte enviado! Aguarde validação.")
-            return redirect("home")
+                messages.success(
+                    request, 
+                    f"Descarte enviado com sucesso! Você ganhou {submission.points} pontos. Aguarde validação."
+                )
+                return redirect("submission-list")  # Redireciona para a lista de submissões
+                
+            except Exception as e:
+                messages.error(request, f"Erro ao salvar submissão: {str(e)}")
+        else:
+            messages.error(request, "Por favor, corrija os erros no formulário.")
     else:
         form = SubmissionForm()
 
     return render(request, "submissions/submission_form.html", {"form": form})
 
+
+# ---------------- EXCLUIR SUBMISSÃO ----------------
+
+class SubmissionDeleteView(DeleteView):
+    model = Submission
+    template_name = "submissions/submission_confirm_delete.html"
+    context_object_name = "submission"
+    success_url = reverse_lazy('submission-list')
+    
+    def get_queryset(self):
+        # Garante que o usuário só pode excluir suas próprias submissões
+        return Submission.objects.filter(user=self.request.user)
+    
+    def delete(self, request, *args, **kwargs):
+        submission = self.get_object()
+        
+        if submission.status == 'approved':
+            request.user.pontos -= submission.points
+            request.user.save()
+            messages.success(request, f"Submissão excluída e {submission.points} pontos removidos.")
+        else:
+            messages.success(request, "Submissão excluída com sucesso.")
+        
+        return super().delete(request, *args, **kwargs)
 
 
 # ---------------- RECOMPENSAS ----------------
@@ -190,4 +218,11 @@ def redeem_reward(request, reward_id):
 
 @login_required
 def cadastrar_descarte(request):
-    return redirect("submission-create")
+    return redirect("submission-create")  # Corrigido para o nome correto da URL
+
+# views.py
+def submission_detail(request, pk):
+    submission = get_object_or_404(Submission, pk=pk)
+    return render(request, 'submission_detail.html', {
+        'submission': submission
+    })
